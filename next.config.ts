@@ -8,6 +8,9 @@ const nextConfig: NextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
   },
+  experimental: {
+    allowedDevOrigins: ['your-domain.com', 'localhost:9005'], // añade aquí tus dominios permitidos
+  },
 };
 
 export default nextConfig;

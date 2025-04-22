@@ -1,8 +1,14 @@
 'use client';
 
-import {generateActivityPlan} from '@/ai/flows/generate-activity-plan';
-import {Button} from '@/components/ui/button';
-import {Card, CardContent} from '@/components/ui/card';
+import { generateActivityPlan } from '@/ai/flows/generate-activity-plan';
+import { Button } from '@/components/ui/button';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'; // Import Select components
 import {
   Form,
   FormControl,
@@ -11,20 +17,64 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form';
-import {Input} from '@/components/ui/input';
-import {Label} from '@/components/ui/label';
-import {Textarea} from '@/components/ui/textarea';
-import {useToast} from '@/hooks/use-toast';
-import {z} from 'zod';
-import {useForm} from 'react-hook-form';
-import {zodResolver} from '@hookform/resolvers/zod';
-import {useTransition} from 'react';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
+import { useToast } from '@/hooks/use-toast';
+import { z } from 'zod';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useTransition } from 'react';
+
+// Define options for dropdowns
+const gradeLevels = [
+  'Infantil (3 años)',
+  'Infantil (4 años)',
+  'Infantil (5 años)',
+  '1º Primaria',
+  '2º Primaria',
+  '3º Primaria',
+  '4º Primaria',
+  '5º Primaria',
+  '6to Primaria', // Kept for default compatibility
+  '1º ESO',
+  '2º ESO',
+  '3º ESO',
+  '4º ESO',
+  '1º Bachillerato',
+  '2º Bachillerato',
+];
+
+const subjects = [
+  'Lengua Castellana y Literatura',
+  'Matemáticas',
+  'Ciencias Naturales',
+  'Ciencias Sociales',
+  'Educación Física',
+  'Inglés',
+  'Francés',
+  'Música',
+  'Plástica',
+  'Tecnología',
+  'Religión/Valores',
+];
+
+const provinces = [
+  'Almería',
+  'Cádiz',
+  'Córdoba',
+  'Granada',
+  'Huelva',
+  'Jaén',
+  'Málaga',
+  'Sevilla',
+];
 
 const formSchema = z.object({
-  numberOfStudents: z.number().min(1, {message: 'El número debe ser mayor que 0'}),
-  gradeLevel: z.string().min(2, {message: 'Nivel de curso requerido'}),
-  subject: z.string().min(2, {message: 'Materia requerida'}),
-  province: z.string().min(2, {message: 'Provincia requerida'}),
+  numberOfStudents: z.number().min(1, { message: 'El número debe ser mayor que 0' }),
+  gradeLevel: z.string({ required_error: 'Nivel de curso requerido' }),
+  subject: z.string({ required_error: 'Materia requerida' }),
+  province: z.string({ required_error: 'Provincia requerida' }),
   studentsWithSpecialNeeds: z.string().optional(),
 });
 
@@ -32,8 +82,8 @@ interface ClassProfileInputProps {
   setActivityPlan: (plan: string) => void;
 }
 
-export function ClassProfileInput({setActivityPlan}: ClassProfileInputProps) {
-  const {toast} = useToast();
+export function ClassProfileInput({ setActivityPlan }: ClassProfileInputProps) {
+  const { toast } = useToast();
   const [isPending, startTransition] = useTransition();
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -74,7 +124,7 @@ export function ClassProfileInput({setActivityPlan}: ClassProfileInputProps) {
         <FormField
           control={form.control}
           name="numberOfStudents"
-          render={({field}) => (
+          render={({ field }) => (
             <FormItem>
               <FormLabel>Número de Estudiantes</FormLabel>
               <FormControl>
@@ -82,9 +132,7 @@ export function ClassProfileInput({setActivityPlan}: ClassProfileInputProps) {
                   type="number"
                   placeholder="Ej. 20"
                   {...field}
-                  onChange={(e) =>
-                    field.onChange(Number(e.target.value))
-                  }
+                  onChange={(e) => field.onChange(Number(e.target.value))}
                 />
               </FormControl>
               <FormMessage />
@@ -94,12 +142,23 @@ export function ClassProfileInput({setActivityPlan}: ClassProfileInputProps) {
         <FormField
           control={form.control}
           name="gradeLevel"
-          render={({field}) => (
+          render={({ field }) => (
             <FormItem>
               <FormLabel>Nivel de Curso</FormLabel>
-              <FormControl>
-                <Input placeholder="Ej. 6to Primaria" {...field} />
-              </FormControl>
+              <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Selecciona un nivel" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  {gradeLevels.map((level) => (
+                    <SelectItem key={level} value={level}>
+                      {level}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
               <FormMessage />
             </FormItem>
           )}
@@ -107,12 +166,23 @@ export function ClassProfileInput({setActivityPlan}: ClassProfileInputProps) {
         <FormField
           control={form.control}
           name="subject"
-          render={({field}) => (
+          render={({ field }) => (
             <FormItem>
               <FormLabel>Materia</FormLabel>
-              <FormControl>
-                <Input placeholder="Ej. Matemáticas" {...field} />
-              </FormControl>
+              <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Selecciona una materia" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  {subjects.map((subject) => (
+                    <SelectItem key={subject} value={subject}>
+                      {subject}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
               <FormMessage />
             </FormItem>
           )}
@@ -120,12 +190,23 @@ export function ClassProfileInput({setActivityPlan}: ClassProfileInputProps) {
         <FormField
           control={form.control}
           name="province"
-          render={({field}) => (
+          render={({ field }) => (
             <FormItem>
               <FormLabel>Provincia</FormLabel>
-              <FormControl>
-                <Input placeholder="Ej. Sevilla" {...field} />
-              </FormControl>
+              <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Selecciona una provincia" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  {provinces.map((province) => (
+                    <SelectItem key={province} value={province}>
+                      {province}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
               <FormMessage />
             </FormItem>
           )}
@@ -133,7 +214,7 @@ export function ClassProfileInput({setActivityPlan}: ClassProfileInputProps) {
         <FormField
           control={form.control}
           name="studentsWithSpecialNeeds"
-          render={({field}) => (
+          render={({ field }) => (
             <FormItem>
               <FormLabel>Alumnos con Necesidades Especiales (opcional)</FormLabel>
               <FormControl>
