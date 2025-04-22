@@ -36,7 +36,7 @@ const gradeLevels = [
   '3º Primaria',
   '4º Primaria',
   '5º Primaria',
-  '6to Primaria', // Kept for default compatibility
+  '6º Primaria', 
   '1º ESO',
   '2º ESO',
   '3º ESO',
