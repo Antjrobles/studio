@@ -13,13 +13,15 @@ export default function Home() {
 
   return (
     <div className="flex flex-col min-h-screen">
-      <nav className="bg-background border-b p-4 flex justify-between items-center">
-        <span className="font-bold text-lg">Andalucía Activa</span>
-        <div className="flex gap-2 items-center">
-          <ThemeToggle />
-          <AuthButton />
-        </div>
-      </nav>
+<nav className="bg-background border-b p-4 flex justify-between items-center">
+  <span className="font-bold text-lg">Andalucía Activa</span>
+  {/*
+  <div className="flex gap-4 items-center">
+    <ThemeToggle />
+    <AuthButton />
+  </div>
+  */}
+</nav>
 
       <main className="container mx-auto p-4 flex-grow">
         <Card className="max-w-3xl mx-auto">
