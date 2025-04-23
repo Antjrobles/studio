@@ -37,9 +37,9 @@ export default function RootLayout({
             disableTransitionOnChange
           >
             {/* Contenedor para los botones en la esquina superior derecha con Flexbox */}
-            <div className="absolute top-4 right-4 flex items-center space-x-2"> {/* Usar flex, alinear verticalmente y añadir espacio */}
-              <AuthButton />
+            <div className="absolute top-4 right-6 flex items-center space-x-2">
               <ThemeToggle />
+              <AuthButton />
             </div>
             {children}
           </ThemeProvider>
